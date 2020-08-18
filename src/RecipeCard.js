@@ -15,7 +15,7 @@ import Button from "@material-ui/core/Button";
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
-    
+
     marginLeft: "auto",
     marginRight: "auto",
   },
@@ -72,7 +72,7 @@ export default function RecipeReviewCard({ recipe }) {
         </Button> */}
         <Link to={`/home/${_id}`} style={{ textDecoration: "none" }}>
           <Button size="small" style={{ color: "#e63d3d" }}>
-            Learn More
+            View Recipe
           </Button>
         </Link>
       </CardActions>

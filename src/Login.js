@@ -112,7 +112,7 @@ class Login extends Component {
             Save your favorite recipes in one place.
             <br /> Post your creative recipes with its consequence pics.
             <br />
-            Storing your recipes in FoodiePrint allows you to quickly search,
+            Storing your recipes in FoodCluster allows you to quickly search,
             find, and select what you want to cook.
           </p>
           <button onClick={this.startAuth.bind(this)}>

@@ -1,0 +1,18 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  color: white;
+  height: 15vh;
+  margin-top: 20px;
+  background-color: #39393f;
+  padding-top: 20px;
+}
+
+.footer__connect > a {
+  text-decoration: none;
+  color: white;
+  margin-left: 5px;
+  margin-right: 5px;
+}

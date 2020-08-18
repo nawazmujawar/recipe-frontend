@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect } from "react-router-dom";
+
 import "./Dashboard.css";
 import { makeStyles } from "@material-ui/core/styles";
 import Typewriter from "typewriter-effect";
@@ -7,7 +7,7 @@ import Container from "@material-ui/core/Container";
 import { facts } from "./foodfact";
 import Axios from "axios";
 import RecipeCard from "./RecipeCard";
-import { Grid, Button, Link } from "@material-ui/core";
+import { Grid, Button } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import CreateIcon from "@material-ui/icons/Create";
 import { useStateValue } from "./StateProvider";
@@ -111,7 +111,7 @@ function Dashboard() {
                 setNameRecipe(e.target.value);
               }}
               placeholder="Search recipes here..."
-              InputProps={{ "aria-label": "search recipe", type: "search" }}
+              inputProps={{ "aria-label": "search recipe", type: "search" }}
             />
             <IconButton
               type="submit"
@@ -133,14 +133,14 @@ function Dashboard() {
           />
         </div>
       )}
+
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           height: "15vh",
-          // backgroundColor: "rgb(234, 237, 237)",
           alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "space-around",
         }}
       >
         <p
@@ -151,8 +151,7 @@ function Dashboard() {
             textAlign: "center",
           }}
         >
-          Storing your recipes in FoodiePrint allows you to quickly search,
-          find, and select what you want to cook.
+          Create and store your recipes.
         </p>
         <Button
           variant="outlined"
@@ -167,9 +166,10 @@ function Dashboard() {
           Post Recipe
         </Button>
       </div>
+
       <hr />
       {isLoading ? (
-        <div class="loader">Loading...</div>
+        <div className="loader">Loading...</div>
       ) : (
         <Container style={{ maxWidth: "80%" }}>
           <Grid container spacing={4} className={classes.gridContainer}>

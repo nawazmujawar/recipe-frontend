@@ -13,7 +13,7 @@ function Header() {
       style={{ backgroundColor: "white" }}
     >
       <Link className="navbar-brand" to="/home">
-        FoodiePrint
+        FoodCluster
       </Link>
       <button
         className="navbar-toggler"
