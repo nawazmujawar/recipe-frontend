@@ -10,7 +10,10 @@ function Header() {
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light  fixed-top "
-      style={{ backgroundColor: "white" }}
+      style={{
+        backgroundColor: "white",
+        boxShadow: "0 4px 12px 0 rgba(0, 0, 0, 0.05)",
+      }}
     >
       <Link className="navbar-brand" to="/home">
         FoodCluster

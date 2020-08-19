@@ -15,6 +15,7 @@ import Paper from "@material-ui/core/Paper";
 import InputBase from "@material-ui/core/InputBase";
 import IconButton from "@material-ui/core/IconButton";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
+import IsLoading from "./IsLoading";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -119,7 +120,7 @@ function Dashboard() {
               className={classes.iconButton}
               aria-label="search"
             >
-              <SearchIcon />
+              {nameRecipe ? <SearchIcon /> : null}
             </IconButton>
           </Paper>
 
@@ -169,7 +170,7 @@ function Dashboard() {
 
       <hr />
       {isLoading ? (
-        <div className="loader">Loading...</div>
+        <IsLoading/>
       ) : (
         <Container style={{ maxWidth: "80%" }}>
           <Grid container spacing={4} className={classes.gridContainer}>
