@@ -49,9 +49,11 @@ export default function RecipeReviewCard({ recipe }) {
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
+          <Avatar
+            src={user.profilePicture}
+            aria-label="recipe"
+            className={classes.avatar}
+          />
         }
         title={user.username}
         // subheader="September 14, 2016"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import "./Dashboard.css";
+import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typewriter from "typewriter-effect";
 import Container from "@material-ui/core/Container";
@@ -154,23 +155,25 @@ function Dashboard() {
         >
           Create and store your recipes.
         </p>
-        <Button
-          variant="outlined"
-          style={{
-            color: "#e63d3d",
-            fontWeight: "bolder ",
-            borderColor: "#e63d3d",
-            marginBottom: "20px",
-          }}
-        >
-          <CreateIcon />
-          Post Recipe
-        </Button>
+        <Link to="/new" style={{ textDecoration: "none" }}>
+          <Button
+            variant="outlined"
+            style={{
+              color: "#e63d3d",
+              fontWeight: "bolder ",
+              borderColor: "#e63d3d",
+              marginBottom: "20px",
+            }}
+          >
+            <CreateIcon />
+            Post Recipe
+          </Button>
+        </Link>
       </div>
 
       <hr />
       {isLoading ? (
-        <IsLoading/>
+        <IsLoading />
       ) : (
         <Container style={{ maxWidth: "80%" }}>
           <Grid container spacing={4} className={classes.gridContainer}>

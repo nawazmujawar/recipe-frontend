@@ -7,7 +7,7 @@ import GitHubIcon from "@material-ui/icons/GitHub";
 
 function Footer() {
   return (
-    <div className="footer">
+    <footer className="footer">
       <div className="footer__connect">
         connect with me
         <a href="https://www.linkedin.com/in/nawazmujawar/">
@@ -26,7 +26,7 @@ function Footer() {
       <p style={{ marginBottom: "10px", marginTop: "20px" }}>
         &#169; 2020 Made with <span>❤️</span> by Nawaz Mujawar
       </p>
-    </div>
+    </footer>
   );
 }
 

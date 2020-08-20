@@ -1,0 +1,32 @@
+.newRecipe {
+  display: flex;
+  align-items: center;
+
+  height: 100vh;
+}
+.newRecipe__paper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.newRecipe__logo {
+  width: 220px;
+
+  /* align */
+}
+
+.newRecipe__paper > p {
+  margin-top: 20px;
+}
+
+.newRecipe__inputFields {
+  width: 80%;
+}
+
+.newRecipe__ingredients {
+  display: flex;
+  align-items: center;
+}

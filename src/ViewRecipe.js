@@ -13,7 +13,7 @@ function ViewRecipe(props) {
   const [{ recipe, author, comments }, dispatch] = useStateValue();
 
   let { name, image, duration, steps, ingredients } = recipe;
-  const { username } = author;
+  const { username, profilePicture } = author;
   const recipeId = props.match.params.recipeId;
 
   image =
@@ -34,8 +34,23 @@ function ViewRecipe(props) {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    async function fetchComment() {
+      const response = await Axios.get(
+        `https://foodprint-api.herokuapp.com/api/recipes/${recipeId}/comments`
+      );
+      console.log("comment red :", response);
+      dispatch({
+        type: "SET__COMMENT",
+        payload: response.data,
+      });
+    }
+    fetchComment();
+  }, []);
+
   return (
     <div className="viewRecipe">
+      {console.log("rrecipe=== :", comments)}
       <Container style={{ border: "none" }} maxWidth="sm">
         <h1 className="viewRecipe__title">{name}</h1>
         <div className="viewRecipe__options">
@@ -43,7 +58,7 @@ function ViewRecipe(props) {
           <DeleteOutlineOutlinedIcon />
         </div>
         <div className="viewRecipe__author">
-          <Avatar className="viewRecipe__authorPhoto" />
+          <Avatar src={profilePicture} className="viewRecipe__authorPhoto" />
           <div className="viewRecipe__authorInfo">
             <h5>{username}</h5>
             <span style={{ color: "lightgrey" }}>Posted on :</span> Date
@@ -69,6 +84,7 @@ function ViewRecipe(props) {
         </div>
         <hr />
         <div>
+          {console.log("Cooo:", comments)}
           {comments.map((comment, index) => (
             <CommentCard userComment={comment} key={index} />
           ))}

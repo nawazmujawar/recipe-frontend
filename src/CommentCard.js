@@ -40,13 +40,16 @@ export default function RecipeReviewCard({ userComment }) {
     <Card className={classes.root}>
       <CardHeader
         avatar={
-          <Avatar aria-label="recipe" className={classes.avatar}>
-            R
-          </Avatar>
+          <Avatar
+            src={user.profilePicture}
+            aria-label="recipe"
+            className={classes.avatar}
+          />
         }
         title={user.username}
         subheader="Date"
       />
+      {console.log("comment:")}
 
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">

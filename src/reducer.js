@@ -25,7 +25,12 @@ export const reducer = (state, action) => {
         ...state,
         recipe: action.payload,
         author: action.payload.user,
-        comments: action.payload.comments,
+      };
+
+    case "SET__COMMENT":
+      return {
+        ...state,
+        comments: action.payload.data,
       };
 
     default:
