@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "./ViewRecipe.css";
 import Axios from "axios";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { Container, Avatar } from "@material-ui/core";
 import { useStateValue } from "./StateProvider";
 import CommentCard from "./CommentCard";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
-import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
+import NewComment from "./NewComment";
 
 function ViewRecipe(props) {
   const [{ recipe, author, comments }, dispatch] = useStateValue();
-
-  let { name, image, duration, steps, ingredients } = recipe;
+  let { name, image, duration, steps, ingredient } = recipe;
   const { username, profilePicture } = author;
   const recipeId = props.match.params.recipeId;
 
@@ -50,7 +49,6 @@ function ViewRecipe(props) {
 
   return (
     <div className="viewRecipe">
-      {console.log("rrecipe=== :", comments)}
       <Container style={{ border: "none" }} maxWidth="sm">
         <h1 className="viewRecipe__title">{name}</h1>
         <div className="viewRecipe__options">
@@ -71,7 +69,7 @@ function ViewRecipe(props) {
           <span>Duration :</span>
           <p>{duration}</p>
           <span>Ingredients :</span>
-          <p>Ingredients</p>
+          <p>{ingredient} </p>
           <span>Steps :</span>
           <p>{steps}</p>
         </div>
@@ -80,15 +78,19 @@ function ViewRecipe(props) {
 
         <div className="viewRecipe__comment">
           <strong>Comments</strong>
-          <ChatOutlinedIcon />
+
+          <NewComment />
         </div>
         <hr />
-        <div>
-          {console.log("Cooo:", comments)}
-          {comments.map((comment, index) => (
-            <CommentCard userComment={comment} key={index} />
-          ))}
-        </div>
+        {comments.length > 0 ? (
+          <div>
+            {comments.map((comment, index) => (
+              <CommentCard userComment={comment} key={index} />
+            ))}
+          </div>
+        ) : (
+          <p>No comments found</p>
+        )}
       </Container>
     </div>
   );

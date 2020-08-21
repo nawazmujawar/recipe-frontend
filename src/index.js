@@ -7,11 +7,12 @@ import StateProvider from "./StateProvider";
 import { initialState, reducer } from "./reducer";
 
 ReactDOM.render(
-  <React.StrictMode>
-    <StateProvider initialState={initialState} reducer={reducer}>
-      <App />
-    </StateProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <StateProvider initialState={initialState} reducer={reducer}>
+    <App />
+  </StateProvider>,
+  // </React.StrictMode>
+
   document.getElementById("root")
 );
 

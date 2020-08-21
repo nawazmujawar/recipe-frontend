@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import "./NewRecipe.css";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
-import AddIcon from "@material-ui/icons/Add";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { Container, TextField, Button } from "@material-ui/core";
 import Axios from "axios";
-import { useStateValue } from "./StateProvider";
+import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
+import ProgressBar from "./ProgressBar";
+import CircularProgressWithLabel from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +28,8 @@ export default function NewRecipe() {
   const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState("");
   const [image, setImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const recipeNameHandler = (event) => {
     setName(event.target.value);
@@ -66,6 +70,12 @@ export default function NewRecipe() {
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         "content-type": "multipart/form-data",
       },
+      onUploadProgress: (progressEvent) => {
+        setIsUploading(true);
+        setUploadProgress(
+          Math.round((progressEvent.loaded / progressEvent.total) * 100)
+        );
+      },
     })
       .then((response) => console.log(response))
       .catch((error) => console.log(error));
@@ -76,7 +86,7 @@ export default function NewRecipe() {
     <div className="newRecipe">
       <Container maxWidth="md">
         <div className={classes.root}>
-          <Paper component="form" elevation={3} className="newRecipe__paper">
+          <Paper component="form" elevation={0} className="newRecipe__paper">
             <Link to="/home">
               <img
                 className="newRecipe__logo"
@@ -97,6 +107,7 @@ export default function NewRecipe() {
                 id="recipeName"
                 label="RecipeName"
                 variant="outlined"
+                required
                 onChange={recipeNameHandler}
               />
               <TextField
@@ -109,22 +120,26 @@ export default function NewRecipe() {
                 id="recipeDuration"
                 label="Duration in minutes"
                 variant="outlined"
+                required
                 onChange={recipeDurationHandler}
               />
               <div className="newRecipe__ingredients">
                 <TextField
-                  style={{ flex: 0.8 }}
+                  style={{ flex: 1 }}
                   id="recipeIngredients"
                   label="Ingredients"
                   variant="outlined"
                   onChange={recipeIngredientsHandler}
                 />
-
-                <AddIcon
+                <AddCircleIcon
                   onClick={addIngredient}
-                  style={{ flex: 0.2, margin: "0" }}
+                  style={{
+                    flex: 0.1,
+                    cursor: "pointer",
+                  }}
                 />
               </div>
+              <p>click on add button(for adding multiple ingredients) </p>
 
               <TextField
                 style={{
@@ -137,11 +152,12 @@ export default function NewRecipe() {
                 multiline
                 rows={6}
                 variant="outlined"
+                required
                 onChange={recipeStepsHandler}
               />
             </div>
             <span>
-              Upload Image
+              Upload Image *
               <input
                 onChange={recipeImageHandler}
                 accept="image/x-png,image/gif,image/jpeg"
@@ -161,6 +177,16 @@ export default function NewRecipe() {
             >
               Submit
             </Button>
+            <ProgressBar value={uploadProgress} />
+            <div style={{ paddingTop: "20px" }}>
+              <a
+                href="/home"
+                style={{ textDecoration: "none", paddingLeft: "20px" }}
+              >
+                <ArrowBackIosRoundedIcon />
+                Home
+              </a>
+            </div>
           </Paper>
         </div>
       </Container>

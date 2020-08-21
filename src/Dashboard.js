@@ -174,7 +174,7 @@ function Dashboard() {
       <hr />
       {isLoading ? (
         <IsLoading />
-      ) : (
+      ) : recipes.length > 0 ? (
         <Container style={{ maxWidth: "80%" }}>
           <Grid container spacing={4} className={classes.gridContainer}>
             {recipes.map((recipe, index) => (
@@ -191,6 +191,10 @@ function Dashboard() {
             ))}
           </Grid>
         </Container>
+      ) : (
+        <h5 style={{ textAlign: "center", height: "100vh" }}>
+          recipe not found...!
+        </h5>
       )}
     </div>
   );
