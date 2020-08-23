@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import "./Login.css";
 import io from "socket.io-client";
-import Homepage from "./Homepage";
+import logo from "../src/images/logo.svg";
 
 const AUTH_SERVER = "https://foodprint-api.herokuapp.com";
 const socket = io(AUTH_SERVER);
@@ -102,11 +102,7 @@ class Login extends Component {
     } else {
       return (
         <div className="login">
-          <img
-            className="login__logo"
-            src="https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg"
-            alt="logo"
-          />
+          <img className="login__logo" src={logo} alt="logo" />
           <h2 className="login__slogan">The home for all recipes.</h2>
           <p>
             Save your favorite recipes in one place.

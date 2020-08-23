@@ -1,14 +1,13 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, withRouter } from "react-router-dom";
 import "./NewRecipe.css";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
-import { Container, TextField, Button } from "@material-ui/core";
+import { Container, TextField, Button, Chip } from "@material-ui/core";
 import Axios from "axios";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import ArrowBackIosRoundedIcon from "@material-ui/icons/ArrowBackIosRounded";
-import ProgressBar from "./ProgressBar";
-import CircularProgressWithLabel from "@material-ui/core/CircularProgress";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,14 +21,44 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function NewRecipe() {
+function NewRecipe(props) {
+  const update = props.location.search.split("=")[1];
+  const recipeId = props.location.search.split("=")[2];
   const [name, setName] = useState("");
+  //const [editName, setEditName] = useState("");
   const [duration, setDuration] = useState("");
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState("");
   const [steps, setSteps] = useState("");
   const [image, setImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUpdateForm, setIsUpdateForm] = useState();
+  const [isDisableButton, setIsDisableButton] = useState(true);
+
+  useEffect(() => {
+    setIsUpdateForm(update);
+    const getRecipe = () => {
+      Axios.get(`https://foodprint-api.herokuapp.com/api/recipes/${recipeId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "content-type": "multipart/form-data",
+        },
+      }).then((response) => {
+        setName(response.data.name);
+        setDuration(response.data.duration);
+        setSteps(response.data.steps);
+        setIngredients(response.data.ingredient);
+        setIsDisableButton(false);
+      });
+    };
+    if (update) {
+      getRecipe();
+    }
+  }, []);
+
+  /*   useEffect(() => {
+    console.log("update:", isUpdateForm);
+  }, []); */
 
   const recipeNameHandler = (event) => {
     setName(event.target.value);
@@ -39,13 +68,8 @@ export default function NewRecipe() {
     setDuration(event.target.value);
   };
 
-  let ingredient;
   const recipeIngredientsHandler = (event) => {
-    ingredient = event.target.value;
-  };
-
-  const addIngredient = () => {
-    setIngredients([...ingredients, [ingredient]]);
+    setIngredients(event.target.value);
   };
 
   const recipeStepsHandler = (event) => {
@@ -56,6 +80,10 @@ export default function NewRecipe() {
     setImage(event.target.files);
   };
 
+  /*  if (isUpdateForm) {
+    getRecipe();
+    console.log("Recipe got", recipe);
+  } */
   const SubmitHandler = () => {
     const formData = new FormData();
 
@@ -77,9 +105,38 @@ export default function NewRecipe() {
         );
       },
     })
-      .then((response) => console.log(response))
+      .then((response) => {
+        console.log(response);
+      })
       .catch((error) => console.log(error));
   };
+
+  const uploadHandler = () => {
+    setIsUploading(true);
+    Axios.patch(
+      `https://foodprint-api.herokuapp.com/api/recipes/${recipeId}`,
+      { name, duration, ingredient: ingredients, steps },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          "Content-Type": "application/json",
+        },
+        onUploadProgress: (progressEvent) => {
+          setUploadProgress(
+            Math.round((progressEvent.loaded / progressEvent.total) * 100)
+          );
+        },
+      }
+    )
+      .then((response) => {
+        if (response.status === 200) {
+          setIsDisableButton(false);
+          setIsUploading(false);
+        }
+      })
+      .catch((error) => console.log(error));
+  };
+
   const classes = useStyles();
 
   return (
@@ -96,7 +153,9 @@ export default function NewRecipe() {
             </Link>
 
             <p> Post your creative recipes here.</p>
-
+            <p style={{ color: "red" }}>
+              All fields are required.(image also) *{" "}
+            </p>
             <div className="newRecipe__inputFields">
               <TextField
                 style={{
@@ -104,6 +163,7 @@ export default function NewRecipe() {
                   marginTop: "15px",
                   marginBottom: "15px",
                 }}
+                value={name}
                 id="recipeName"
                 label="RecipeName"
                 variant="outlined"
@@ -116,6 +176,7 @@ export default function NewRecipe() {
                   marginTop: "15px",
                   marginBottom: "15px",
                 }}
+                value={duration}
                 type="number"
                 id="recipeDuration"
                 label="Duration in minutes"
@@ -126,20 +187,13 @@ export default function NewRecipe() {
               <div className="newRecipe__ingredients">
                 <TextField
                   style={{ flex: 1 }}
+                  value={ingredients}
                   id="recipeIngredients"
                   label="Ingredients"
                   variant="outlined"
                   onChange={recipeIngredientsHandler}
                 />
-                <AddCircleIcon
-                  onClick={addIngredient}
-                  style={{
-                    flex: 0.1,
-                    cursor: "pointer",
-                  }}
-                />
               </div>
-              <p>click on add button(for adding multiple ingredients) </p>
 
               <TextField
                 style={{
@@ -147,6 +201,7 @@ export default function NewRecipe() {
                   marginTop: "15px",
                   marginBottom: "15px",
                 }}
+                value={steps}
                 id="recipeSteps"
                 label="Procedure of recipes"
                 multiline
@@ -156,36 +211,65 @@ export default function NewRecipe() {
                 onChange={recipeStepsHandler}
               />
             </div>
-            <span>
-              Upload Image *
-              <input
-                onChange={recipeImageHandler}
-                accept="image/x-png,image/gif,image/jpeg"
-                type="file"
-                title="Upload Image"
-              />
-            </span>
+            {update ? null : (
+              <span>
+                Upload Image *
+                <input
+                  onChange={recipeImageHandler}
+                  accept="image/x-png,image/gif,image/jpeg"
+                  type="file"
+                  title="Upload Image"
+                />
+              </span>
+            )}
 
-            <Button
-              variant="contained"
-              style={{
-                marginTop: "20px",
-                color: "white",
-                backgroundColor: "#e63d3d",
-              }}
-              onClick={SubmitHandler}
-            >
-              Submit
-            </Button>
-            <ProgressBar value={uploadProgress} />
+            {isUpdateForm ? (
+              isUploading ? (
+                <React.Fragment>
+                  <p>Updating your post {uploadProgress} %</p>
+                  <CircularProgress value={uploadProgress} />
+                </React.Fragment>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={{
+                    marginTop: "20px",
+                    color: "white",
+                    backgroundColor: "#e63d3d",
+                  }}
+                  disabled={isDisableButton}
+                  onClick={uploadHandler}
+                >
+                  Update
+                </Button>
+              )
+            ) : isUploading ? (
+              <React.Fragment>
+                <p>Creating your post {uploadProgress} %</p>
+                <CircularProgress value={uploadProgress} />
+              </React.Fragment>
+            ) : (
+              <Button
+                variant="contained"
+                style={{
+                  marginTop: "20px",
+                  color: "white",
+                  backgroundColor: "#e63d3d",
+                }}
+                onClick={SubmitHandler}
+              >
+                Submit
+              </Button>
+            )}
+
             <div style={{ paddingTop: "20px" }}>
-              <a
-                href="/home"
+              <Link
+                to="/home"
                 style={{ textDecoration: "none", paddingLeft: "20px" }}
               >
                 <ArrowBackIosRoundedIcon />
                 Home
-              </a>
+              </Link>
             </div>
           </Paper>
         </div>
@@ -193,3 +277,5 @@ export default function NewRecipe() {
     </div>
   );
 }
+
+export default withRouter(NewRecipe);

@@ -42,7 +42,8 @@ function Header() {
             My Recipes
           </Link>
           <Link className="nav-link" to="/" onClick={logoutHandler}>
-            Nawaz <LogoutIcon className="header__logoutLogo" />
+            {localStorage.getItem("username")}
+            <LogoutIcon className="header__logoutLogo" />
           </Link>
         </div>
       </div>

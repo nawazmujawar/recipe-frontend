@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./ViewRecipe.css";
 import Axios from "axios";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link, Redirect, useHistory } from "react-router-dom";
 import { Container, Avatar } from "@material-ui/core";
 import { useStateValue } from "./StateProvider";
 import CommentCard from "./CommentCard";
@@ -12,9 +12,10 @@ import NewComment from "./NewComment";
 function ViewRecipe(props) {
   const [{ recipe, author, comments }, dispatch] = useStateValue();
   let { name, image, duration, steps, ingredient } = recipe;
-  const { username, profilePicture } = author;
+  const { username, profilePicture, _id } = author;
   const recipeId = props.match.params.recipeId;
 
+  const history = useHistory();
   image =
     // "https://images.unsplash.com/photo-1597676345712-ba4536073513?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=676&q=80";
     "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80";
@@ -47,14 +48,47 @@ function ViewRecipe(props) {
     fetchComment();
   }, []);
 
+  const recipeDeleteHandler = () => {
+    Axios.delete(
+      `https://foodprint-api.herokuapp.com/api/recipes/${recipeId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      }
+    )
+      .then((response) => {
+        console.log(response);
+        history.goBack();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const loginUserId = localStorage.getItem("userId");
   return (
     <div className="viewRecipe">
       <Container style={{ border: "none" }} maxWidth="sm">
         <h1 className="viewRecipe__title">{name}</h1>
-        <div className="viewRecipe__options">
-          <EditOutlinedIcon style={{ marginRight: "20px" }} />
-          <DeleteOutlineOutlinedIcon />
-        </div>
+        {_id === loginUserId ? (
+          <div className="viewRecipe__options">
+            <Link
+              to={`/new?update=true&recipeId=${recipeId}`}
+              style={{
+                marginRight: "20px",
+                textDecoration: "none",
+                color: "black",
+              }}
+            >
+              <EditOutlinedIcon />
+            </Link>
+            <DeleteOutlineOutlinedIcon
+              style={{ cursor: "pointer" }}
+              onClick={recipeDeleteHandler}
+            />
+          </div>
+        ) : null}
         <div className="viewRecipe__author">
           <Avatar src={profilePicture} className="viewRecipe__authorPhoto" />
           <div className="viewRecipe__authorInfo">
@@ -79,13 +113,18 @@ function ViewRecipe(props) {
         <div className="viewRecipe__comment">
           <strong>Comments</strong>
 
-          <NewComment />
+          <NewComment type="add" />
         </div>
         <hr />
+
         {comments.length > 0 ? (
           <div>
             {comments.map((comment, index) => (
-              <CommentCard userComment={comment} key={index} />
+              <CommentCard
+                recipeId={recipeId}
+                userComment={comment}
+                key={index}
+              />
             ))}
           </div>
         ) : (

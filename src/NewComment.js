@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { withRouter, Redirect } from "react-router-dom";
+import { withRouter, useHistory } from "react-router-dom";
 import ChatOutlinedIcon from "@material-ui/icons/ChatOutlined";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -8,15 +8,18 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import { appHistory } from "./App";
 import Axios from "axios";
 
 function NewComment(props) {
   const [comment, setComment] = useState("");
   const [open, setOpen] = useState(false);
 
-  const recipeID = props.match.params.recipeId;
 
-  const handleClickOpen = () => {
+  const recipeID = props.match.params.recipeId;
+  const loginUserId = localStorage.getItem("userId");
+
+  const handleClickOpen = async () => {
     setOpen(true);
   };
 
@@ -29,9 +32,7 @@ function NewComment(props) {
   };
 
   const commentSubmitHandler = () => {
-    console.log(("comment", comment));
-    console.log("accessToken :", localStorage.getItem("accessToken"));
-    console.log("recipeId :", recipeID);
+
 
     Axios.post(
       `https://foodprint-api.herokuapp.com/api/recipes/${recipeID}/comments`,
@@ -44,12 +45,12 @@ function NewComment(props) {
       }
     )
       .then((response) => {
-        console.log(response);
+        setOpen(false);
+        appHistory.go(0);
       })
       .catch((err) => {
         console.log(err);
       });
-    setOpen(false);
   };
 
   return (
@@ -63,7 +64,9 @@ function NewComment(props) {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Add Comment</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          Add comment
+        </DialogTitle>
         <DialogContent>
           <DialogContentText>
             Give feedback, response and compliments to this creative recipe.

@@ -26,6 +26,12 @@ export const reducer = (state, action) => {
         recipe: action.payload,
         author: action.payload.user,
       };
+    case "DELETE__SINGLERECIPE":
+      return {
+        ...state,
+        recipe: action.payload,
+        author: action.payload.user,
+      };
 
     case "SET__COMMENT":
       return {
