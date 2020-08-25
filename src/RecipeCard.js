@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import moment from "moment";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -56,7 +56,7 @@ export default function RecipeReviewCard({ recipe }) {
           />
         }
         title={user.username}
-        // subheader="September 14, 2016"
+        subheader={moment().from(user.createdAt)}
       />
       <CardMedia className={classes.media} image={image} title={name} />
       <CardContent>
