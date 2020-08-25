@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RecipeReviewCard({ recipe }) {
   const classes = useStyles();
-  let { _id, user, name, image, steps } = recipe;
+  let { _id, user, name, image, steps, updatedAt } = recipe;
   const showDescription = steps.slice(0, 150);
   image =
     "https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80";
@@ -56,7 +56,7 @@ export default function RecipeReviewCard({ recipe }) {
           />
         }
         title={user.username}
-        subheader={moment().from(user.createdAt)}
+        subheader={moment(updatedAt).fromNow()}
       />
       <CardMedia className={classes.media} image={image} title={name} />
       <CardContent>

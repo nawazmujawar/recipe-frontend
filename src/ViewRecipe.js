@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import moment from "moment";
 import "./ViewRecipe.css";
 import Axios from "axios";
 import { withRouter, Link, Redirect, useHistory } from "react-router-dom";
@@ -11,7 +12,7 @@ import NewComment from "./NewComment";
 
 function ViewRecipe(props) {
   const [{ recipe, author, comments }, dispatch] = useStateValue();
-  let { name, image, duration, steps, ingredient } = recipe;
+  let { name, image, duration, steps, ingredient, updatedAt } = recipe;
   const { username, profilePicture, _id } = author;
   const recipeId = props.match.params.recipeId;
 
@@ -93,7 +94,8 @@ function ViewRecipe(props) {
           <Avatar src={profilePicture} className="viewRecipe__authorPhoto" />
           <div className="viewRecipe__authorInfo">
             <h5>{username}</h5>
-            <span style={{ color: "lightgrey" }}>Posted on :</span> Date
+            <span style={{ color: "lightgrey" }}>Posted on :</span>{" "}
+            {moment(updatedAt).fromNow()}
           </div>
         </div>
 
